@@ -12,7 +12,7 @@ const { isAuthenticated, isAdmin } = require("../middleware/auth");
 // create user
 router.post("/create-user", async (req, res, next) => {
   try {
-    const { name, email, password, avatar } = req.body;
+    const { name, email, password} = req.body;
     const userEmail = await User.findOne({ email });
 
     if (userEmail) {
@@ -27,10 +27,7 @@ router.post("/create-user", async (req, res, next) => {
       name: name,
       email: email,
       password: password,
-      avatar: {
-        public_id: myCloud.public_id,
-        url: myCloud.secure_url,
-      },
+      
     };
 
     const activationToken = createActivationToken(user);
