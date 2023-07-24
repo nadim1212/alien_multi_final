@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 app.use(cors({
-  origin: 'https://alienbd.com',
+  origin: '*',
   credentials: true
 }));
 
