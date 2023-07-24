@@ -19,11 +19,7 @@ router.post("/create-user", async (req, res, next) => {
       return next(new ErrorHandler("User already exists", 400));
     }
 
-    const myCloud = await cloudinary.v2.uploader.upload(avatar, {
-      folder: "avatars",
-    });
-
-    const user = {
+      const user = {
       name: name,
       email: email,
       password: password,
@@ -74,7 +70,7 @@ router.post(
       if (!newUser) {
         return next(new ErrorHandler("Invalid token", 400));
       }
-      const { name, email, password, avatar } = newUser;
+      const { name, email, password} = newUser;
 
       let user = await User.findOne({ email });
 
@@ -84,7 +80,6 @@ router.post(
       user = await User.create({
         name,
         email,
-        avatar,
         password,
       });
 
