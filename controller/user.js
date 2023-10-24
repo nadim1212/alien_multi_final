@@ -12,23 +12,30 @@ const { isAuthenticated, isAdmin } = require("../middleware/auth");
 // create user
 router.post("/create-user", async (req, res, next) => {
   try {
-    const { name, email, password} = req.body;
+    const { name, email, password, avatar } = req.body;
     const userEmail = await User.findOne({ email });
 
     if (userEmail) {
       return next(new ErrorHandler("User already exists", 400));
     }
 
-      const user = {
+    const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+      folder: "avatars",
+    });
+
+    const user = {
       name: name,
       email: email,
       password: password,
-      
+      avatar: {
+        public_id: myCloud.public_id,
+        url: myCloud.secure_url,
+      },
     };
 
     const activationToken = createActivationToken(user);
 
-    const activationUrl = `https://alienbd.com/activation/${activationToken}`;
+    const activationUrl = `https://eshop-tutorial-pyri.vercel.app/activation/${activationToken}`;
 
     try {
       await sendMail({
@@ -70,7 +77,7 @@ router.post(
       if (!newUser) {
         return next(new ErrorHandler("Invalid token", 400));
       }
-      const { name, email, password} = newUser;
+      const { name, email, password, avatar } = newUser;
 
       let user = await User.findOne({ email });
 
@@ -80,6 +87,7 @@ router.post(
       user = await User.create({
         name,
         email,
+        avatar,
         password,
       });
 
